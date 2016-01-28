@@ -6,6 +6,15 @@ OUT_EXTENSION=mp4
 HANDBRAKE_ARGS="--optimize --preset \"Android Tablet\""
 SCREEN_NAME=video_encode
 
+if [ ! -d /var/run/handbrake_batch ]; then
+	ME=`whoami`
+	MEGROUP=`id -gn`
+	sudo mkdir -p /var/run/handbrake_batch
+	sudo chown $ME:$MEGROUP /var/run/handbrake_batch
+fi
+
+(
+flock -x -w 2 222
 
 FULL_STRING=""
 rm -f "$LOG_FILE" 
@@ -15,6 +24,7 @@ add_handbrake()
 	INPUT=$1
 	EXTENSION=${INPUT##*.}
 	OUTPUT=$OUT_DIR/`basename "$INPUT" "$EXTENSION"`$OUT_EXTENSION
+	echo Creating $OUTPUT
 	if [ ! -f "$OUTPUT" ]; then
 		FULL_STRING="$FULL_STRING HandBrakeCLI -i \"$INPUT\" -o \"$OUTPUT\" $HANDBRAKE_ARGS >> \"$LOG_FILE\" 2>&1"
 		FULL_STRING="$FULL_STRING &&"
@@ -38,4 +48,6 @@ done
 FULL_STRING="$FULL_STRING echo \"\""
 
 screen -S "$SCREEN_NAME" -d -m $FULL_STRING
+
+) 222>/var/run/handbrake_batch/lock
 
