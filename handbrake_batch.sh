@@ -15,8 +15,10 @@ add_handbrake()
 	INPUT=$1
 	EXTENSION=${INPUT##*.}
 	OUTPUT=$OUT_DIR/`basename "$INPUT" "$EXTENSION"`$OUT_EXTENSION
-	FULL_STRING="$FULL_STRING HandBrakeCLI -i \"$INPUT\" -o \"$OUTPUT\" $HANDBRAKE_ARGS >> \"$LOG_FILE\" 2>&1"
-	FULL_STRING="$FULL_STRING &&"
+	if [ ! -f "$OUTPUT" ]; then
+		FULL_STRING="$FULL_STRING HandBrakeCLI -i \"$INPUT\" -o \"$OUTPUT\" $HANDBRAKE_ARGS >> \"$LOG_FILE\" 2>&1"
+		FULL_STRING="$FULL_STRING &&"
+	fi
 }
 
 for I in "$@"
@@ -35,5 +37,5 @@ do
 done
 FULL_STRING="$FULL_STRING echo \"\""
 
-nohup screen -S "$SCREEN_NAME" -d -m $FULL_STRING
+screen -S "$SCREEN_NAME" -d -m $FULL_STRING
 
