@@ -1,7 +1,7 @@
 #!/bin/bash
 
-LOG_FILE=/mnt/hd1/convert.log
-OUT_DIR=/mnt/hd1/phone_sync/pete_note4/sync
+LOG_FILE=./convert.log
+OUT_DIR=.
 OUT_EXTENSION=mp4
 HANDBRAKE_ARGS="--optimize --preset \"Android Tablet\""
 SCREEN_NAME=video_encode
@@ -21,7 +21,7 @@ show_help()
 }
 
 declare -a INPUT_FILES
-INPUT_FILES_LENGTH = 0
+INPUT_FILES_LENGTH=0
 
 for i in "$@"
 do
@@ -32,22 +32,27 @@ case $i in
 	;;
 	-o=*|--out=*)
 		OUT_DIR="${i#*=}"
+		shift
 	;;
 	-e=*|--ext=*)
 		OUT_EXTENSION="${i#*=}"
+		shift
 	;;
 	-a=*|--args=*)
 		HANDBRAKE_ARGS="${i#*=}"
+		shift
 	;;
 	-n=*|--name=*)
 		SCREEN_NAME="${i#*=}"
+		shift
 	;;
 	-l=*|--log=*)
 		LOG_FILE="${i#*=}"
+		shift
 	;;
 	*)
-		INPUT_FILES[ $INPUT_FILES_LENGTH ] = "${i#*=}"
-		INPUT_FILES_LENGTH=$INPUT_FILES_LENGTH+1
+		INPUT_FILES[INPUT_FILES_LENGTH]="${i#*=}"
+		((INPUT_FILES_LENGTH++))
 	;;
 esac
 done
@@ -67,7 +72,7 @@ add_handbrake()
 	fi
 }
 
-for I in "$@"
+for I in "$INPUT_FILES"
 do
   if [ -d "$I" ]; then
 	SAVEIFS=$IFS
@@ -83,7 +88,7 @@ do
 done
 FULL_STRING="$FULL_STRING echo \"\""
 
-echo screen -S "$SCREEN_NAME" -d -m $FULL_STRING
+screen -S "$SCREEN_NAME" -d -m $FULL_STRING
 
 ) 222>/var/run/handbrake_batch/lock
 
