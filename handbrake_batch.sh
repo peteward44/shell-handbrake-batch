@@ -7,10 +7,8 @@ HANDBRAKE_ARGS="--optimize --preset \"Android Tablet\""
 SCREEN_NAME=video_encode
 
 if [ ! -d /var/run/handbrake_batch ]; then
-	ME=`whoami`
-	MEGROUP=`id -gn`
 	sudo mkdir -p /var/run/handbrake_batch
-	sudo chown $ME:$MEGROUP /var/run/handbrake_batch
+	sudo chmod 777 /var/run/handbrake_batch
 fi
 
 (
