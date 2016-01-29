@@ -14,6 +14,44 @@ fi
 (
 flock -x -w 2 222
 
+show_help()
+{
+	echo "Handbrake CLI batch tool"
+	echo "usage: handbrake-batch -o=/home/user/out -e=mp4 inputfile1.avi inputfile2.avi"
+}
+
+declare -a INPUT_FILES
+INPUT_FILES_LENGTH = 0
+
+for i in "$@"
+do
+case $i in
+	-h|--help)
+		show_help
+		exit 0
+	;;
+	-o=*|--out=*)
+		OUT_DIR="${i#*=}"
+	;;
+	-e=*|--ext=*)
+		OUT_EXTENSION="${i#*=}"
+	;;
+	-a=*|--args=*)
+		HANDBRAKE_ARGS="${i#*=}"
+	;;
+	-n=*|--name=*)
+		SCREEN_NAME="${i#*=}"
+	;;
+	-l=*|--log=*)
+		LOG_FILE="${i#*=}"
+	;;
+	*)
+		INPUT_FILES[ $INPUT_FILES_LENGTH ] = "${i#*=}"
+		INPUT_FILES_LENGTH=$INPUT_FILES_LENGTH+1
+	;;
+esac
+done
+
 FULL_STRING=""
 rm -f "$LOG_FILE" 
 
@@ -45,7 +83,7 @@ do
 done
 FULL_STRING="$FULL_STRING echo \"\""
 
-screen -S "$SCREEN_NAME" -d -m $FULL_STRING
+echo screen -S "$SCREEN_NAME" -d -m $FULL_STRING
 
 ) 222>/var/run/handbrake_batch/lock
 
