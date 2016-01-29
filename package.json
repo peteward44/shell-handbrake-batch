@@ -1,0 +1,26 @@
+{
+  "name": "shell-handbrake-batch",
+  "version": "1.0.0",
+  "description": "Bash shell script to run HandbrakeCLI in batches",
+  "main": "index.js",
+  "preferGlobal": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "handbrake-batch": "handbrake_batch.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peteward44/shell-handbrake-batch.git"
+  },
+  "keywords": [
+    "shell"
+  ],
+  "author": "Pete Ward",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/peteward44/shell-handbrake-batch/issues"
+  },
+  "homepage": "https://github.com/peteward44/shell-handbrake-batch#readme"
+}
