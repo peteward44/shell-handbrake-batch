@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOG_FILE=./convert.log
+LOG_FILE=~/convert.log
 OUT_DIR=.
 OUT_EXTENSION=mp4
 
@@ -20,6 +20,7 @@ show_help()
 
 declare -a INPUT_FILES
 INPUT_FILES_LENGTH=0
+SCREEN_NAME="default"
 
 for i in "$@"
 do
@@ -64,8 +65,9 @@ add_handbrake()
 	OUTPUT=$OUT_DIR/`basename "$INPUT" "$EXTENSION"`$OUT_EXTENSION
 	if [ ! -f "$OUTPUT" ]; then
 		echo Creating $OUTPUT
-		#screen -S "$SCREEN_NAME" -d -m "/usr/bin/HandBrakeCLI -i $INPUT -o $OUTPUT $HANDBRAKE_ARGS >> $LOG_FILE 2>&1"
-		nohup /usr/bin/HandBrakeCLI --optimize --preset "Android Tablet" -i "$INPUT" -o "$OUTPUT" $HANDBRAKE_ARGS >> "$LOG_FILE" 2>&1
+		/usr/bin/tmux new-session -d -s "$SCREEN_NAME" /usr/bin/HandBrakeCLI --optimize --preset "iPod" -a 1 --mixdown stereo --ab 128 -q 30 -i "$INPUT" -o "$OUTPUT" >> "$LOG_FILE" 2>&1
+		#/usr/bin/screen -D -t "$SCREEN_NAME" -X "/usr/bin/HandBrakeCLI --optimize --preset \"Android\" -a 1 --mixdown stereo --ab 128 -q 30 -i \"$INPUT\" -o \"$OUTPUT\" >> \"$LOG_FILE\" 2>&1"
+		#nohup /usr/bin/HandBrakeCLI --optimize --preset "Android" -a 1 --mixdown stereo --ab 128 -q 30 -i "$INPUT" -o "$OUTPUT" >> "$LOG_FILE" 2>&1
 	fi
 }
 
